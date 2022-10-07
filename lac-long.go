@@ -38,6 +38,10 @@ type Tick struct {
 	leadStyle string
 	routeType string
 }
+type Route struct {
+	name string
+	url  string
+}
 
 func main() {
 	contestants := []string{
@@ -45,17 +49,42 @@ func main() {
 		"200039487/louis-thomas-schreiber",
 		"112474537/francis-lessard",
 	}
+	results := make(map[Route]map[string]bool)
+	contestantChallenges := make(map[string][]Route)
 
 	for i := 0; i < len(contestants); i++ {
 		ticks := GetTicksForContestant(contestants[i])
 		lacLongTicks := GetLacLongTicks(ticks)
 		fmt.Printf("lac long ticks for %s: %d\n", contestants[i], len(lacLongTicks))
 
+		for j := 0; j < len(lacLongTicks); j++ {
+			route := Route{
+				name: lacLongTicks[j].routeName,
+				url:  lacLongTicks[j].url,
+			}
+			if results[route] == nil {
+				results[route] = make(map[string]bool)
+			}
+			results[route][contestants[i]] = true
+		}
 	}
 
-	// get ticks for each contestant
-	// create map of route -> route info and contestants that have done it
-	// For each contestant return routes not done
+	for route, result := range results {
+		for i := 0; i < len(contestants); i++ {
+			if !result[contestants[i]] {
+				contestantChallenges[contestants[i]] = append(contestantChallenges[contestants[i]], route)
+			}
+		}
+	}
+
+	for person, routes := range contestantChallenges {
+		fmt.Println(person)
+		for i := 0; i < len(routes); i++ {
+			fmt.Println(routes[i].name)
+		}
+		fmt.Println("-------------------")
+	}
+
 }
 
 func GetTicksForContestant(contestantId string) []Tick {
@@ -117,7 +146,7 @@ func IsInLacLong(tick Tick) bool {
 func IsValidSend(tick Tick) bool {
 	isValid := false
 	if tick.style == "Lead" {
-		isValid = tick.leadStyle == "Redpoint" || tick.leadStyle == "Onsight" || tick.leadStyle == "Flash"
+		isValid = tick.leadStyle != "Fell/Hung" && tick.leadStyle != "Pinkpoint"
 	}
 	if tick.routeType == "Boulder" {
 		isValid = tick.style == "Send" || tick.style == "Flash"
