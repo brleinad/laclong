@@ -40,18 +40,26 @@ type Tick struct {
 }
 
 func main() {
-	ticks := GetTicks()
+	contestants := []string{
+		"200222284/daniel-rodas-bautista",
+		"200039487/louis-thomas-schreiber",
+		"112474537/francis-lessard",
+	}
 
-	lacLongTicks := GetLacLongTicks(ticks)
-	fmt.Print(lacLongTicks)
-	// fmt.Println(numberOfTicks)
+	for i := 0; i < len(contestants); i++ {
+		ticks := GetTicksForContestant(contestants[i])
+		lacLongTicks := GetLacLongTicks(ticks)
+		fmt.Printf("lac long ticks for %s: %d\n", contestants[i], len(lacLongTicks))
+
+	}
+
 	// get ticks for each contestant
 	// create map of route -> route info and contestants that have done it
 	// For each contestant return routes not done
 }
 
-func GetTicks() []Tick {
-	const URL = "https://www.mountainproject.com/user/200222284/daniel-rodas-bautista/tick-export"
+func GetTicksForContestant(contestantId string) []Tick {
+	URL := fmt.Sprintf("https://www.mountainproject.com/user/%s/tick-export", contestantId)
 	ticksResponse, err := http.Get(URL)
 
 	if err != nil {
