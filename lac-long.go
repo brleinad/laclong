@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	"net/http"
+	"os"
 	"strings"
 )
 
@@ -84,18 +84,20 @@ func main() {
 		}
 		fmt.Println("-------------------")
 	}
+	// TODO: make this into an API
+	// TODO: return in order?
 
 }
 
 func GetTicksForContestant(contestantId string) []Tick {
-	URL := fmt.Sprintf("https://www.mountainproject.com/user/%s/tick-export", contestantId)
-	ticksResponse, err := http.Get(URL)
+	fileName := fmt.Sprintf("./%s_ticks.csv", strings.Replace(contestantId, "/", "_", -1))
+	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
 
 	if err != nil {
 		fmt.Println("There was an error")
 	}
 
-	csvReader := csv.NewReader(ticksResponse.Body)
+	csvReader := csv.NewReader(file)
 	csvTicks, err := csvReader.ReadAll()
 
 	if err != nil {
