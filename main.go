@@ -49,12 +49,9 @@ func getContestants() []string {
 }
 
 func serveTemplate(w http.ResponseWriter, r *http.Request) {
-	// fp := filepath.Join(".", "static", "index.html")
-	// tmpl, err := template.ParseFiles(fp)
-
-	var tmpl = template.Must(template.ParseFS(static, "static/*"))
 	data := laclong.GetLacLongChallenges(getContestants())
-	log.Println("YOYO: ", data)
+
+	tmpl := template.Must(template.ParseFS(static, "static/*"))
 	err := tmpl.ExecuteTemplate(w, "index.html", data)
 	if err != nil {
 		log.Fatal("Failed to execute template")

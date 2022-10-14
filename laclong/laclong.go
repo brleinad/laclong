@@ -67,12 +67,19 @@ func GetLacLongChallenges(contestants []string) map[string][]Route {
 	for route, result := range results {
 		for i := 0; i < len(contestants); i++ {
 			if !result[contestants[i]] {
-				contestantChallenges[contestants[i]] = append(contestantChallenges[contestants[i]], route)
+				contestantChallenges[GetContestantName(contestants[i])] = append(contestantChallenges[GetContestantName(contestants[i])], route)
 			}
 		}
 	}
 
 	return contestantChallenges
+}
+
+func GetContestantName(contestantId string) string {
+	name := strings.Split(contestantId, "/")[1]
+	name = strings.Replace(name, "-", " ", -1)
+	name = strings.ToUpper(name)
+	return name
 }
 
 func GetTicksForContestant(contestantId string) []Tick {
