@@ -10,14 +10,18 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/brleinad/laclong/laclong"
 	"github.com/robfig/cron/v3"
 )
 
 func main() {
-	downloadCsvTicks()
+	// downloadCsvTicks()
 	c := cron.New()
 	c.AddFunc("@daily", downloadCsvTicks)
 	c.Start()
+
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/", serveTemplate)
 	log.Print("Listening on :3000...")
@@ -28,27 +32,23 @@ func main() {
 
 }
 
-func serveTemplate(w http.ResponseWriter, r *http.Request) {
-	fp := filepath.Join("static", "index.html")
-	tmpl, _ := template.ParseFiles(fp)
-	data := struct {
-		Items []string
-	}{
-		Items: []string{
-			"bob",
-			"bab",
-		},
-	}
-	tmpl.Execute(w, data)
-}
-
-func downloadCsvTicks() {
-	contestants := []string{
+func getContestants() []string {
+	return []string{
 		"200222284/daniel-rodas-bautista",
 		"200039487/louis-thomas-schreiber",
 		"112474537/francis-lessard",
 	}
-	for _, contestant := range contestants {
+}
+
+func serveTemplate(w http.ResponseWriter, r *http.Request) {
+	fp := filepath.Join("static", "index.html")
+	tmpl, _ := template.ParseFiles(fp)
+	data := laclong.GetLacLongChallenges(getContestants())
+	tmpl.Execute(w, data)
+}
+
+func downloadCsvTicks() {
+	for _, contestant := range getContestants() {
 		downloadCsvTicksForContestant(contestant)
 	}
 }

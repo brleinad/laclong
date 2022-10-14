@@ -1,4 +1,4 @@
-package main
+package laclong
 
 import (
 	"encoding/csv"
@@ -39,16 +39,11 @@ type Tick struct {
 	routeType string
 }
 type Route struct {
-	name string
-	url  string
+	Name string
+	Url  string
 }
 
-func main() {
-	contestants := []string{
-		"200222284/daniel-rodas-bautista",
-		"200039487/louis-thomas-schreiber",
-		"112474537/francis-lessard",
-	}
+func GetLacLongChallenges(contestants []string) map[string][]Route {
 	results := make(map[Route]map[string]bool)
 	contestantChallenges := make(map[string][]Route)
 
@@ -59,8 +54,8 @@ func main() {
 
 		for j := 0; j < len(lacLongTicks); j++ {
 			route := Route{
-				name: lacLongTicks[j].routeName,
-				url:  lacLongTicks[j].url,
+				Name: lacLongTicks[j].routeName,
+				Url:  lacLongTicks[j].url,
 			}
 			if results[route] == nil {
 				results[route] = make(map[string]bool)
@@ -80,13 +75,11 @@ func main() {
 	for person, routes := range contestantChallenges {
 		fmt.Println(person)
 		for i := 0; i < len(routes); i++ {
-			fmt.Println(routes[i].name)
+			fmt.Println(routes[i].Name)
 		}
 		fmt.Println("-------------------")
 	}
-	// TODO: make this into an API
-	// TODO: return in order?
-
+	return contestantChallenges
 }
 
 func GetTicksForContestant(contestantId string) []Tick {
