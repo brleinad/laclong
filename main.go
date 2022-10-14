@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +15,7 @@ import (
 )
 
 //go:embed static/*
-var resources embed.FS
+var static embed.FS
 
 func main() {
 	downloadCsvTicks()
@@ -22,12 +23,16 @@ func main() {
 	c.AddFunc("@daily", downloadCsvTicks)
 	c.Start()
 
-	fs := http.FileServer(http.Dir("./static"))
+	fSys, err := fs.Sub(static, "static")
+	if err != nil {
+		log.Fatal("Failed to serve static ", err)
+	}
+	fs := http.FileServer(http.FS(fSys))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/", serveTemplate)
 	log.Print("Listening on :8080...")
-	err := http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +51,7 @@ func serveTemplate(w http.ResponseWriter, r *http.Request) {
 	// fp := filepath.Join(".", "static", "index.html")
 	// tmpl, err := template.ParseFiles(fp)
 
-	var tmpl = template.Must(template.ParseFS(resources, "static/*"))
+	var tmpl = template.Must(template.ParseFS(static, "static/*"))
 	data := laclong.GetLacLongChallenges(getContestants())
 	log.Println("YOYO: ", data)
 	err := tmpl.ExecuteTemplate(w, "index.html", data)
