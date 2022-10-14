@@ -1,17 +1,20 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/brleinad/laclong/laclong"
 	"github.com/robfig/cron/v3"
 )
+
+//go:embed static/*
+var resources embed.FS
 
 func main() {
 	downloadCsvTicks()
@@ -40,10 +43,16 @@ func getContestants() []string {
 }
 
 func serveTemplate(w http.ResponseWriter, r *http.Request) {
-	fp := filepath.Join("static", "index.html")
-	tmpl, _ := template.ParseFiles(fp)
+	// fp := filepath.Join(".", "static", "index.html")
+	// tmpl, err := template.ParseFiles(fp)
+
+	var tmpl = template.Must(template.ParseFS(resources, "static/*"))
 	data := laclong.GetLacLongChallenges(getContestants())
-	tmpl.Execute(w, data)
+	log.Println("YOYO: ", data)
+	err := tmpl.ExecuteTemplate(w, "index.html", data)
+	if err != nil {
+		log.Fatal("Failed to execute template")
+	}
 }
 
 func downloadCsvTicks() {
