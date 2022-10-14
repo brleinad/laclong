@@ -44,6 +44,7 @@ func getContestants() []string {
 		"200222284/daniel-rodas-bautista",
 		"200039487/louis-thomas-schreiber",
 		"112474537/francis-lessard",
+		"201468827/alexandre-tessier",
 	}
 }
 
