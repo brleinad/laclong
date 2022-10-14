@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/brleinad/laclong/laclong"
 	"github.com/robfig/cron/v3"
@@ -57,9 +56,9 @@ func downloadCsvTicksForContestant(contestantId string) {
 	URL := fmt.Sprintf("https://www.mountainproject.com/user/%s/tick-export", contestantId)
 	ticksResponse, err := http.Get(URL)
 	if err != nil {
-		log.fatal("There was an error")
+		log.Fatal("There was an error")
 	}
-	fileName := fmt.Sprintf("./%s_ticks.csv", strings.Replace(contestantId, "/", "_", -1))
+	fileName := laclong.GetFileName(contestantId)
 	file, err := os.Create(fileName)
 	if err != nil {
 		log.Fatal(err)
@@ -70,5 +69,5 @@ func downloadCsvTicksForContestant(contestantId string) {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	log.Print("Downloaded a file %s with size %d\n", fileName, size)
+	log.Printf("Downloaded a file %s with size %d\n", fileName, size)
 }

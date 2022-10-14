@@ -2,7 +2,6 @@ package laclong
 
 import (
 	"encoding/csv"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -84,8 +83,8 @@ func GetLacLongChallenges(contestants []string) map[string][]Route {
 }
 
 func GetTicksForContestant(contestantId string) []Tick {
-	fileName := fmt.Sprintf("./%s_ticks.csv", strings.Replace(contestantId, "/", "_", -1))
-	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
+	// fileName := fmt.Sprintf("/data/%s_ticks.csv", strings.Replace(contestantId, "/", "_", -1))
+	file, err := os.OpenFile(GetFileName(contestantId), os.O_RDONLY, 0)
 
 	if err != nil {
 		log.Fatal("There was an error opening file ", contestantId, " ERROR:", err)
