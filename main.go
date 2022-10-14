@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	// downloadCsvTicks()
+	downloadCsvTicks()
 	c := cron.New()
 	c.AddFunc("@daily", downloadCsvTicks)
 	c.Start()
@@ -24,8 +24,8 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/", serveTemplate)
-	log.Print("Listening on :3000...")
-	err := http.ListenAndServe(":3000", nil)
+	log.Print("Listening on :8080...")
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func downloadCsvTicksForContestant(contestantId string) {
 	URL := fmt.Sprintf("https://www.mountainproject.com/user/%s/tick-export", contestantId)
 	ticksResponse, err := http.Get(URL)
 	if err != nil {
-		fmt.Println("There was an error")
+		log.fatal("There was an error")
 	}
 	fileName := fmt.Sprintf("./%s_ticks.csv", strings.Replace(contestantId, "/", "_", -1))
 	file, err := os.Create(fileName)
@@ -70,5 +70,5 @@ func downloadCsvTicksForContestant(contestantId string) {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	fmt.Printf("Downloaded a file %s with size %d\n", fileName, size)
+	log.Print("Downloaded a file %s with size %d\n", fileName, size)
 }

@@ -3,6 +3,7 @@ package laclong
 import (
 	"encoding/csv"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
@@ -50,7 +51,7 @@ func GetLacLongChallenges(contestants []string) map[string][]Route {
 	for i := 0; i < len(contestants); i++ {
 		ticks := GetTicksForContestant(contestants[i])
 		lacLongTicks := GetLacLongTicks(ticks)
-		fmt.Printf("lac long ticks for %s: %d\n", contestants[i], len(lacLongTicks))
+		// fmt.Printf("lac long ticks for %s: %d\n", contestants[i], len(lacLongTicks))
 
 		for j := 0; j < len(lacLongTicks); j++ {
 			route := Route{
@@ -72,13 +73,13 @@ func GetLacLongChallenges(contestants []string) map[string][]Route {
 		}
 	}
 
-	for person, routes := range contestantChallenges {
-		fmt.Println(person)
-		for i := 0; i < len(routes); i++ {
-			fmt.Println(routes[i].Name)
-		}
-		fmt.Println("-------------------")
-	}
+	// for _, routes := range contestantChallenges {
+	// 	// fmt.Println(person)
+	// 	for i := 0; i < len(routes); i++ {
+	// 		fmt.Println(routes[i].Name)
+	// 	}
+	// 	fmt.Println("-------------------")
+	// }
 	return contestantChallenges
 }
 
@@ -87,14 +88,14 @@ func GetTicksForContestant(contestantId string) []Tick {
 	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
 
 	if err != nil {
-		fmt.Println("There was an error")
+		log.Fatal("There was an error opening file ", contestantId, " ERROR:", err)
 	}
 
 	csvReader := csv.NewReader(file)
 	csvTicks, err := csvReader.ReadAll()
 
 	if err != nil {
-		fmt.Println("There was an error")
+		log.Fatal("There was an error getting ticks from CSV file ", contestantId, err)
 	}
 
 	return csv2Ticks(csvTicks)
