@@ -72,13 +72,6 @@ func GetLacLongChallenges(contestants []string) map[string][]Route {
 		}
 	}
 
-	// for _, routes := range contestantChallenges {
-	// 	// fmt.Println(person)
-	// 	for i := 0; i < len(routes); i++ {
-	// 		fmt.Println(routes[i].Name)
-	// 	}
-	// 	fmt.Println("-------------------")
-	// }
 	return contestantChallenges
 }
 
