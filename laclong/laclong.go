@@ -134,7 +134,7 @@ func GetLacLongTicks(ticks []Tick) []Tick {
 }
 
 func IsInLacLong(tick Tick) bool {
-	const lacLongAreaName = "International > North America > Canada > Quebec > 03. Quebec City, Charlevoix, Portneuf > Lac Long"
+	const lacLongAreaName = "International > North America > Canada > Quebec > 03. Portneuf > Lac Long"
 	return strings.Contains(tick.area, lacLongAreaName)
 }
 
