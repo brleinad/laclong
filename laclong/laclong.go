@@ -39,9 +39,13 @@ type Tick struct {
 	routeType string
 }
 type Route struct {
-	Name string
-	Url  string
+	Name   string
+	Url    string
+	Grade  string
+	Sector string
 }
+
+const lacLongAreaName = "International > North America > Canada > Quebec > 03. Portneuf > Lac Long"
 
 func GetLacLongChallenges(contestants []string) map[string][]Route {
 	results := make(map[Route]map[string]bool)
@@ -53,9 +57,13 @@ func GetLacLongChallenges(contestants []string) map[string][]Route {
 		// fmt.Printf("lac long ticks for %s: %d\n", contestants[i], len(lacLongTicks))
 
 		for j := 0; j < len(lacLongTicks); j++ {
+			area := lacLongTicks[j].area
+			sector := strings.SplitAfter(area, lacLongAreaName+" > ")
 			route := Route{
-				Name: lacLongTicks[j].routeName,
-				Url:  lacLongTicks[j].url,
+				Name:   lacLongTicks[j].routeName,
+				Url:    lacLongTicks[j].url,
+				Grade:  lacLongTicks[j].grade,
+				Sector: sector[len(sector)-1],
 			}
 			if results[route] == nil {
 				results[route] = make(map[string]bool)
@@ -77,8 +85,9 @@ func GetLacLongChallenges(contestants []string) map[string][]Route {
 
 func GetContestantName(contestantId string) string {
 	name := strings.Split(contestantId, "/")[1]
-	name = strings.Replace(name, "-", " ", -1)
-	name = strings.ToUpper(name)
+	// name = strings.Replace(name, "-", " ", -1)
+	name = strings.Split(name, "-")[0]
+	name = strings.ToTitle(name)
 	return name
 }
 
@@ -134,7 +143,6 @@ func GetLacLongTicks(ticks []Tick) []Tick {
 }
 
 func IsInLacLong(tick Tick) bool {
-	const lacLongAreaName = "International > North America > Canada > Quebec > 03. Portneuf > Lac Long"
 	return strings.Contains(tick.area, lacLongAreaName)
 }
 

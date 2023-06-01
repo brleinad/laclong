@@ -6,9 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Lac Long Challenge</title>
     <link rel="stylesheet" href="/static/pico.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
     <!-- <link rel="icon" href="./favicon.ico" type="image/x-icon"> -->
   </head>
   <body>
+    <script>
+      let tables = [];
+    </script>
     <main class="container">
         <h1>Lac Long Challenge</h1>  
 
@@ -17,11 +23,33 @@
         <summary>
           {{ $contestant }} - {{ len $routes }} left
         </summary>
-        <ul>
+
+        <table id="{{ $contestant }}" role="grid" data-order='[[ 2, "asc" ]]'>
+          <thead>
+            <tr>
+              <th scope="col">Route</th>
+              <th scope="col">Grade</th>
+              <th scope="col">Sector</th>
+            </tr>
+          </thead>
+          <tbody>
           {{ range $routes }}
-          <li><a href="{{ .Url }}">{{ .Name }}</a></li>
-          {{ end}}
-        </ul>
+            <tr>
+              <td scope="row"><a href="{{ .Url }}">{{ .Name }}</a></td>
+              <td>{{ .Grade }}</td>
+              <td>{{ .Sector }}</td>
+            </tr>
+          {{ end }}
+          </tbody>
+        </table>
+
+        <script>
+          tables.push(new DataTable('#{{ $contestant }}', {
+            paging: false
+              // options
+          }));
+        </script>
+
       </details>
       {{ end }}
 
