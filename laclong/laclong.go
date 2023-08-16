@@ -148,10 +148,11 @@ func IsInLacLong(tick Tick) bool {
 
 func IsValidSend(tick Tick) bool {
 	isValid := false
-	if tick.style == "Lead" {
+    if tick.style == "Solo" {
+        isValid = true
+    } else if tick.style == "Lead" {
 		isValid = tick.leadStyle != "Fell/Hung" && tick.leadStyle != "Pinkpoint"
-	}
-	if tick.routeType == "Boulder" {
+	} else if tick.routeType == "Boulder" {
 		isValid = tick.style == "Send" || tick.style == "Flash"
 	}
 
